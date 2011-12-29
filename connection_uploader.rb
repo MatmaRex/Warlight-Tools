@@ -158,8 +158,6 @@ mab.tag! 'setMapDetails' do
 end
 xml = mab.to_s
 
-puts xml
-
 api = 'http://warlight.net'
 
 http = Net::HTTP.start('warlight.net')
