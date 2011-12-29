@@ -83,7 +83,12 @@ def parse_path_to_poly pathdata
 			
 		when Savage::Directions::CubicCurveTo
 			points = []
-			(0.0..1.0).step(0.1).map do |mu|
+			
+			len = last_point.distance command.target
+			# obliczamy najwyzej 10 punktow po drodze, mniej dla sciezek < 50 px - dla 5px i mniejszych 0
+			step = max( min(1, 5/len), 0.1 )
+			
+			(0.0..1.0).step(step).map do |mu|
 				points << bezier_cubic(
 					last_point, 
 					(command.absolute? ? Point[0,0] : last_point) + command.control_1, 
