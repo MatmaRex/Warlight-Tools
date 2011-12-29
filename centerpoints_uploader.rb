@@ -1,5 +1,4 @@
 # coding: utf-8
-$:.unshift File.dirname($0)
 puts 'Starting up, be patient...'
 puts ''
 
@@ -15,11 +14,13 @@ require 'markaby'
 require 'net/http'
 
 
-require './tools/extensions'
-require './tools/bezier_curves'
-require './tools/area_centroid'
+$LOAD_PATH.unshift File.dirname($0)+"/tools"
+# from ./tools/
+require 'extensions'
+require 'bezier_curves'
+require 'area_centroid'
+require 'svg_territory_parsing'
 
-require './tools/svg_territory_parsing'
 
 def ask!
 	print '> '
@@ -27,7 +28,7 @@ def ask!
 end
 
 
-exit if Ocra
+exit if defined? Ocra
 ################################################################
 # script starts here
 ################################################################
