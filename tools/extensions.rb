@@ -9,6 +9,13 @@ class Savage::Directions::Point
 	def + other
 		self.class.new(self.x + other.x, self.y + other.y)
 	end
+	
+	def distance_sq other
+		(self.x - other.x)**2  +  (self.y - other.y)**2
+	end
+	def distance other
+		Math.sqrt self.distance_sq other
+	end
 end
 
 def min *a; a.min; end
