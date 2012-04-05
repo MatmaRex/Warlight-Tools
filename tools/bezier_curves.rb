@@ -14,15 +14,12 @@ def bezier_quadra p1, p2, p3, mu
 end
 
 def bezier_cubic p1, p2, p3, p4, mu
-	p = Point[0,0]
-
 	mum1 = 1 - mu;
-	mum13 = mum1 * mum1 * mum1;
-	mu3 = mu * mu * mu;
-
-	p.x = mum13*p1.x + 3*mu*mum1*mum1*p2.x + 3*mu*mu*mum1*p3.x + mu3*p4.x;
-	p.y = mum13*p1.y + 3*mu*mum1*mum1*p2.y + 3*mu*mu*mum1*p3.y + mu3*p4.y;
+	a, b, c, d = mum1**3, 3*mu*mum1**2, 3*mu**2*mum1, mu**3
+	
+	x = a*p1.x + b*p2.x + c*p3.x + d*p4.x;
+	y = a*p1.y + b*p2.y + c*p3.y + d*p4.y;
 	# p.z = mum13*p1.z + 3*mu*mum1*mum1*p2.z + 3*mu*mu*mum1*p3.z + mu3*p4.z;
 
-	return p
+	return Point[x,y]
 end
