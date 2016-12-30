@@ -8,10 +8,8 @@ require 'progressbar'
 require 'savage'
 
 require 'nokogiri'
-require 'builder'
-require 'markaby'
-
-require 'net/http'
+require 'json'
+require 'rest-client'
 
 
 $LOAD_PATH.unshift File.dirname($0)+"/tools"
@@ -89,31 +87,26 @@ puts ""
 puts "Great, we've done it! Uploading data..."
 puts ""
 
-Markaby::Builder.set :indent, 2
-Markaby::Builder.set :auto_validation, false
-mab = Markaby::Builder.new
-mab.tag! 'setMapDetails' do
-	tag! 'email', email
-	tag! 'password', userpass
-	tag! 'mapID', mapid
-	
-	centerpoints.each_pair do |id, point|
-		tag! 'setTerritoryCenterPoint', id: id, x: point.x, y: point.y
-	end
-end
-xml = mab.to_s
+token_resp = RestClient.post 'https://www.warlight.net/API/GetAPIToken', { Email: email, Password: userpass }
+token = JSON.parse(token_resp)["APIToken"]
 
+data = {
+	email: email,
+	APIToken: token,
+	mapID: mapid,
+	commands: centerpoints.map{|id, point|
+		{
+			command: 'setTerritoryCenterPoint',
+			id: id, x: point.x, y: point.y
+		}
+	}
+}
 
-api = 'http://warlight.net'
+response = RestClient.post 'https://www.warlight.net/API/SetMapDetails', data.to_json
 
-http = Net::HTTP.start('warlight.net')
-response = http.post('/API/SetMapDetails.aspx', xml)
-
-if response.is_a?(Net::HTTPOK) && (response.body =~ /<Success/)
+if JSON.parse(response)["Success"]
 	puts "It appears to have worked! Go check your map in the map designer now."
 else
 	puts "Well damn, something didn't work. :( It might be a good idea to report the error along with the data below."
-	p response
 	puts response
 end
-
