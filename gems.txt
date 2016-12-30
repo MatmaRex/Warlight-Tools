@@ -1,0 +1,6 @@
+json
+nokogiri
+ocra
+progressbar
+rest-client
+savage
